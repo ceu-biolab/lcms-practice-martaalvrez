@@ -27,16 +27,17 @@ public class MassTransformation {
         //creamos el regex para identificar el número de antes de la M y el de antes del signo
         //regex es para buscar patrones en el texto
 
-        Pattern searchPattern = Pattern.compile("^(\\d*)M.*?(\\d*)[+-]$"); //crea el patrón que buscamos
-        Matcher matcher = searchPattern.matcher(adduct); //compara el patrón con los aductos
+        Pattern searchPattern = Pattern.compile("^\\D*(\\d*)M.*?(\\d*)[\\+−]$");
+        Matcher matcher = searchPattern.matcher(adduct);
 
-        if(matcher.find()){
-            String numMultimerString = matcher.group(1); //guarda el número que vaya antes de la M
-            String numChargeString = matcher.group(2); //guarda el número que vaya antes del signo
+        if (matcher.find()) {
+            // grupo 1 = dígitos antes de la ‘M’  (número de multiméro)
+            String numMultimerString = matcher.group(1);
+            // grupo 2 = dígitos antes del signo + o - (carga)
+            String numChargeString   = matcher.group(2);
 
-            numMultimer = numMultimerString.isEmpty() ? 1 : Integer.parseInt(numMultimerString);
-            charge = numChargeString.isEmpty() ? 1 : Integer.parseInt(numChargeString);
-            //se asigna el número de multímero y de carga, y si está vacío el string es porque la carga/numMult = 1
+             numMultimer = numMultimerString.isEmpty() ? 1 : Integer.parseInt(numMultimerString);
+             charge      = numChargeString.isEmpty()   ? 1 : Math.abs(Integer.parseInt(numChargeString));
         }
 
         //ahora buscamos el aducto en la lista de aductos para buscar su masa
@@ -50,6 +51,9 @@ public class MassTransformation {
             throw new IllegalArgumentException("Adduct not recognized" +adduct);
         }
 
+        if (adduct.endsWith("-") ) {
+            massToSearch = -massToSearch;
+        }
         //aplicamos las fórmulas dependiendo de la carga y el número de multímeros
 
         /*if (charge == 1) {
@@ -96,18 +100,18 @@ public class MassTransformation {
         int numMultimer = 1; //por defecto
 
         //creamos el patrón regex igual que antes
-        Pattern searchPattern = Pattern.compile("^\\D*(\\d*)M.*?(\\d*)[+-]$"); //crea el patrón que buscamos
-        Matcher matcher = searchPattern.matcher(adduct); //compara el patrón con los aductos
+        Pattern searchPattern = Pattern.compile("^\\D*(\\d*)M.*?(\\d*)[\\+−]$");
+        Matcher matcher = searchPattern.matcher(adduct);
 
         if (matcher.find()) {
-            String numMultimerString = matcher.group(1); //guarda el número que vaya antes de la M
-            String numChargeString = matcher.group(2); //guarda el número que vaya antes del signo
+            // grupo 1 = dígitos antes de la ‘M’  (número de multiméro)
+            String numMultimerString = matcher.group(1);
+            // grupo 2 = dígitos antes del signo + o - (carga)
+            String numChargeString   = matcher.group(2);
 
             numMultimer = numMultimerString.isEmpty() ? 1 : Integer.parseInt(numMultimerString);
-            charge = numChargeString.isEmpty() ? 1 : Integer.parseInt(numChargeString);
-            //se asigna el número de multímero y de carga, y si está vacío el string es porque la carga/numMult = 1
+            charge      = numChargeString.isEmpty()   ? 1 : Math.abs(Integer.parseInt(numChargeString));
         }
-
         //buscamos el aducto en la lista de aductos para buscar su masa
         //buscamos en la lista de positivos, si no se encuentra en la de negativos y sino está en ninguna, da error
 
@@ -149,6 +153,26 @@ public class MassTransformation {
         return monoisotopicMass;
 
          */
+
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getMonoisotopicMassFromMZ(565.3,"[M+H]+"));
+        System.out.println(getMonoisotopicMassFromMZ(565.3,"[2M+H]+"));
+        System.out.println(getMonoisotopicMassFromMZ(565.3,"[M+2H]2+"));
+        System.out.println(getMonoisotopicMassFromMZ(565.3,"[M+Cl]−"));
+        System.out.println(getMonoisotopicMassFromMZ(565.3,"[M-H]−"));
+        System.out.println(getMonoisotopicMassFromMZ(565.3,"[M-2H]2−"));
+
+
+        System.out.println("");
+
+        System.out.println(getMZFromMonoisotopicMass(564.2927239999999,"[M+H]+"));
+        System.out.println(getMZFromMonoisotopicMass(282.14636199999995,"[2M+H]+"));
+        System.out.println(getMZFromMonoisotopicMass(1128.5854479999998,"[M+2H]2+"));
+        System.out.println(getMZFromMonoisotopicMass(530.330598,"[M+Cl]−"));
+        System.out.println(getMZFromMonoisotopicMass(566.307276,"[M-H]−"));
+        System.out.println(getMZFromMonoisotopicMass(1131.607276,"[M-2H]2−"));
 
     }
 
