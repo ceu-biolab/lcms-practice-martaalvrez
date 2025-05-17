@@ -156,7 +156,7 @@ public class MassTransformation {
 
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         System.out.println(getMonoisotopicMassFromMZ(565.3,"[M+H]+"));
         System.out.println(getMonoisotopicMassFromMZ(565.3,"[2M+H]+"));
         System.out.println(getMonoisotopicMassFromMZ(565.3,"[M+2H]2+"));
@@ -174,6 +174,6 @@ public class MassTransformation {
         System.out.println(getMZFromMonoisotopicMass(566.307276,"[M-H]−"));
         System.out.println(getMZFromMonoisotopicMass(1131.607276,"[M-2H]2−"));
 
-    }
+    }*/
 
 }
